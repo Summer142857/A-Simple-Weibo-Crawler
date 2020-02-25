@@ -144,8 +144,20 @@ class Spider():
         passwd_input.send_keys(password)
 
         # discern verification code
-        location, size = self._get_cdoe_img()
-        self._showCode(location, size)
+        try:
+            location, size = self._get_cdoe_img()
+            self._showCode(location, size)
+        except:
+            # click login button
+            button = self.browser.find_elements_by_css_selector(
+                "#pl_login_form > div > div:nth-child(3) > div.info_list.login_btn > a")
+            button[0].click()
+            time.sleep(8)
+            # get cookies
+            cookies = self.browser.get_cookies()
+            with open('./cookies_log/log.txt', "w+") as f:
+                f.write(str(cookies))
+            self.login_flag = True
 
 
     def loginWithCode(self, code):
